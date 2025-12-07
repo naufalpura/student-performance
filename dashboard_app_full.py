@@ -71,6 +71,35 @@ def load_data(conn, query):
 # =====================================================
 
 def app():
+    st.markdown("""
+    <style>
+    .metric-card {
+        background: #e8f0ff;
+        padding: 20px;
+        border-radius: 14px;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.10);
+        text-align: center;
+        border: 1px solid #c6d7ff;
+    }
+    .metric-label {
+        font-size: 14px;
+        color: #2a4b9b;
+        font-weight: 600;
+    }
+    .metric-value {
+        font-size: 24px;
+        font-weight: 800;
+        color: #1a2f6f;
+    }
+    .metric-delta {
+        font-size: 14px;
+        margin-top: 5px;
+        font-weight: 600;
+        color: #0a6a30;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
     if 'guidance_threshold' not in st.session_state:
         # Nilai default awal, misalnya 75
         st.session_state.guidance_threshold = 75
@@ -96,14 +125,38 @@ def app():
     col1, col2, col3, col4 = st.columns(4)
 
     with col1:
-        st.metric(label="Total Data", value=f"{int(total_data)} Sampel")
+        st.markdown(f"""
+        <div class="metric-card">
+            <div class="metric-label">Total Data</div>
+            <div class="metric-value">{int(total_data)} Sampel</div>
+        </div>
+        """, unsafe_allow_html=True)
+
     with col2:
-        st.metric(label="Data Training", value=f"{int(data_info_df.loc[data_info_df['key'] == 'train_data', 'value'].iloc[0])} Sampel")
+        train_count = int(data_info_df.loc[data_info_df['key'] == 'train_data', 'value'].iloc[0])
+        st.markdown(f"""
+        <div class="metric-card">
+            <div class="metric-label">Data Training</div>
+            <div class="metric-value">{train_count} Sampel</div>
+        </div>
+        """, unsafe_allow_html=True)
+
     with col3:
-        st.metric(label="Model Terbaik", value=best_model_row.name)
+        st.markdown(f"""
+        <div class="metric-card">
+            <div class="metric-label">Model Terbaik</div>
+            <div class="metric-value">{best_model_row.name}</div>
+        </div>
+        """, unsafe_allow_html=True)
+
     with col4:
-        st.metric(label="R² Score Terbaik", value=f"{best_model_row['r2_score']:.4f}", 
-                  delta=f"RMSE: {best_model_row['rmse_score']:.2f}")
+        st.markdown(f"""
+        <div class="metric-card">
+            <div class="metric-label">R² Score Terbaik</div>
+            <div class="metric-value">{best_model_row['r2_score']:.4f}</div>
+            <div class="metric-delta">RMSE: {best_model_row['rmse_score']:.2f}</div>
+        </div>
+        """, unsafe_allow_html=True)
 
     st.markdown("---")
 
